@@ -1,0 +1,39 @@
+.video-wrapper{
+    width: 100%;
+    overflow: hidden;
+    max-width: 600px;
+}
+.video-slider{
+    display: inline-block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+.video-slider li{
+    display: inline-block;
+    float: left;
+}
+.video-slider li img{
+    width: 100%;
+}
+.next, .previous{
+    cursor: pointer;
+}
+.next{
+    float: right;
+}
+.pager li{
+    display: inline-block;
+    border-radius: 50%;
+    background: #000;
+    width: 20px;
+    height: 20px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+.pager li.active{
+    background: #999;
+}
+
+
