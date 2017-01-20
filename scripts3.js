@@ -126,24 +126,22 @@ $('document').ready(function () {
                 sigtouchstartx,
                 sigtouchmovex,
                 sigmovex;
-            $(document).on('touchstart', carousel.slide.find('current') , function(event){
-                csAnimating = 0;
+            carousel.videoContainer.on('touchstart', carousel.slide.find('current') , function(event){
                 sigtouchstartx =  event.originalEvent.touches[0].pageX;
-            }).on('touchmove', carousel.slide.find('current'), function(event){
+            }).on('touchmove', carousel.slide, function(event){
                 sigtouchmovex = event.originalEvent.touches[0].pageX;
                 sigmovex = (sigtouchmovex - sigtouchstartx);
                 // carousel.videoContainer.css('left',sigmovex);
-            }).on('touchend', carousel.slide.find('current'), function(e){
+            }).on('touchend', carousel.slide.find('current'), function(event){
                 if(sigtouchmovex<sigtouchstartx && sigtouchmovex!=undefined && csAnimating==0 && sigmovex< -125){
-                    csAnimating = 1;
                     carousel.slideLeft();
                 }else if(sigtouchmovex>sigtouchstartx && sigtouchmovex!=undefined && csAnimating==0 && sigmovex>125){
-                    csAnimating = 1;
                     carousel.slideRight();
-                } else {
-                    return;
                 }
-                e.preventDefault()
+                sigtouchmovex = 0;
+                sigtouchstartx = 0;
+                sigmovex = 0;
+                // return false;
             });
         }
     };
