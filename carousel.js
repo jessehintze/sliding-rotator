@@ -2,28 +2,53 @@ $('document').ready(function () {
     var carousel = {
         init : function () {
             carousel.directionalNav();
-            carousel.wresize();
+            // carousel.wresize();
             carousel.slideWidthMove();
             carousel.touchEvent();
-            carousel.pager();
+            // carousel.pager();
+            carousel.slideMathCarousel();
+            carousel.cloneSlides();
+            carousel.slideSetup();
             var wwindow = window.innerWidth;
-            if(wwindow < 768){
-                carousel.slideMath();
-            }
+            // if(wwindow < 768){
+            //     carousel.slideMath();
+            // }
         },
+        videoWrapper : $('.video-wrapper'),
         videoContainer : $('.video-slider'),
         slide : $('.video-slider li'),
+        slideSetup : function () {
+            carousel.slide.eq(0).addClass('current');
+            carousel.slide.first().addClass('first');
+            carousel.slide.last().addClass('last');
+        },
         slideMath : function () {
             var slideLength = carousel.slide.length;
             var videoContainerWidth = 100 * slideLength+'%';
             var slideWidth = 100 / slideLength+'%';
-            carousel.slide.eq(0).addClass('current');
             carousel.slide.width(slideWidth) ;
             carousel.videoContainer.css({width: videoContainerWidth});
         },
-         slideWidthMove : function () {
-             return carousel.slide.outerWidth();
-         },
+        slideMathCarousel : function () {
+            var slideLength = carousel.slide.length;
+            var slideWidth = carousel.slide.outerWidth();
+            var videoContainerWidth = slideWidth * slideLength + (slideWidth * 2) +'px';
+
+            console.log(videoContainerWidth);
+            carousel.videoContainer.css({width: videoContainerWidth});
+        },
+        slideWidthMove : function () {
+            return carousel.slide.outerWidth();
+        },
+        slideWidthCarousel : function () {
+            return carousel.slide.outerWidth();
+        },
+        cloneSlides : function () {
+            var lastSlide = carousel.slide.last().clone();
+            var firstSlide = carousel.slide.first().clone();
+            carousel.videoContainer.prepend(lastSlide);
+            carousel.videoContainer.append(firstSlide);
+        },
         wresize : function(){
             $(window).resize(function () {
                 var wwindow = window.innerWidth;
@@ -44,12 +69,12 @@ $('document').ready(function () {
         },
         animateLeft : function(){
             carousel.videoContainer.animate({
-                left: "-="+carousel.slideWidthMove()
+                left: "-="+carousel.slideWidthCarousel()
             }, 200);
         },
         animateRight : function(){
             carousel.videoContainer.animate({
-                left: "+="+carousel.slideWidthMove()
+                left: "+="+carousel.slideWidthCarousel()
             }, 200);
         },
         slideLeft : function () {
@@ -106,18 +131,18 @@ $('document').ready(function () {
             });
             $('.pager li:first-child').addClass('active');
             $('.pager li').on('click', function () {
-               var pagerIndex = $(this).index();
-               if($(this).hasClass('active')){
-                   return;
-               } else {
-                   carousel.slide.removeClass('current');
-                   carousel.slide.eq(pagerIndex).addClass('current');
-                   carousel.videoContainer.animate({
-                       left: -carousel.slideWidthMove() * pagerIndex
-                   }, 200);
-                   $('.pager li').removeClass('active');
-                   $(this).addClass('active');
-               }
+                var pagerIndex = $(this).index();
+                if($(this).hasClass('active')){
+                    return;
+                } else {
+                    carousel.slide.removeClass('current');
+                    carousel.slide.eq(pagerIndex).addClass('current');
+                    carousel.videoContainer.animate({
+                        left: -carousel.slideWidthMove() * pagerIndex
+                    }, 200);
+                    $('.pager li').removeClass('active');
+                    $(this).addClass('active');
+                }
             })
         },
         touchEvent : function () {
