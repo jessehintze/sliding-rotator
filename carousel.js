@@ -7,7 +7,7 @@ $('document').ready(function () {
             carousel.touchEvent();
             // carousel.pager();
             carousel.slideMathCarousel();
-            carousel.cloneSlides();
+            // carousel.cloneSlides();
             carousel.slideSetup();
             var wwindow = window.innerWidth;
             // if(wwindow < 768){
@@ -32,16 +32,23 @@ $('document').ready(function () {
         slideMathCarousel : function () {
             var slideLength = carousel.slide.length;
             var slideWidth = carousel.slide.outerWidth();
-            var videoContainerWidth = slideWidth * slideLength + (slideWidth * 2) +'px';
-
-            console.log(videoContainerWidth);
+            // factor this in to add a clone before and after
+            // var videoContainerWidth = slideWidth * slideLength + (slideWidth * 2) +'px';
+            var videoContainerWidth = slideWidth * slideLength +'px';
             carousel.videoContainer.css({width: videoContainerWidth});
         },
         slideWidthMove : function () {
             return carousel.slide.outerWidth();
         },
         slideWidthCarousel : function () {
-            return carousel.slide.outerWidth();
+            var slideWidth = carousel.slide.outerWidth();
+            var videoWrapperWidth = carousel.videoWrapper.outerWidth();
+            var visibleSlides = Math.floor(videoWrapperWidth / slideWidth);
+            var visibleSlidesMovement = visibleSlides * slideWidth;
+            return visibleSlidesMovement;
+        },
+        setVisibleSlides : function () {
+            carousel.slide.forEach()
         },
         cloneSlides : function () {
             var lastSlide = carousel.slide.last().clone();
