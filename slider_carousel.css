@@ -1,7 +1,10 @@
 .video-wrapper{
-    width: 100%;
+    width: 600px;
     overflow: hidden;
     max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+
 }
 .video-slider{
     display: inline-block;
