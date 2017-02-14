@@ -1,8 +1,6 @@
 $('document').ready(function () {
     var carousel = {
-        
-        
-        
+
         init : function (sliderClass, sliderWrapperClass) {
             carousel.directionalNav();
             // carousel.wresize();
