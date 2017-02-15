@@ -1,5 +1,5 @@
-.video-wrapper{
-    width: 600px;
+.slide-viewport{
+    /*width: 600px;*/
     overflow: hidden;
     max-width: 600px;
     margin: 0 auto;
@@ -19,6 +19,21 @@
     width: 275px;
 }
 .video-slider li img{
+    width: 100%;
+}
+.img-slider{
+    display: inline-block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+.img-slider li{
+    display: inline-block;
+    float: left;
+    width: 100%;
+}
+.img-slider li img{
     width: 100%;
 }
 .next, .previous{

@@ -1,6 +1,8 @@
 $('document').ready(function () {
     var carousel = {
 
+
+
         init : function (sliderClass, sliderWrapperClass) {
             carousel.directionalNav();
             // carousel.wresize();
@@ -16,7 +18,7 @@ $('document').ready(function () {
             // }
         },
         sliderOuterWrapper : $('.video-wrapper'),
-        sliderContainer : $('.video-slider'),
+        videoContainer : $('.video-slider'),
         slide : $('.video-slider li'),
         slideSetup : function () {
             carousel.slide.eq(0).addClass('current');
@@ -25,18 +27,18 @@ $('document').ready(function () {
         },
         slideMath : function () {
             var slideLength = carousel.slide.length;
-            var sliderContainerWidth = 100 * slideLength+'%';
+            var videoContainerWidth = 100 * slideLength+'%';
             var slideWidth = 100 / slideLength+'%';
             carousel.slide.width(slideWidth) ;
-            carousel.sliderContainer.css({width: sliderContainerWidth});
+            carousel.videoContainer.css({width: videoContainerWidth});
         },
         slideMathCarousel : function () {
             var slideLength = carousel.slide.length;
             var slideWidth = carousel.slide.outerWidth();
             // factor this in to add a clone before and after
-            // var sliderContainerWidth = slideWidth * slideLength + (slideWidth * 2) +'px';
-            var sliderContainerWidth = slideWidth * slideLength +'px';
-            carousel.sliderContainer.css({width: sliderContainerWidth});
+            // var videoContainerWidth = slideWidth * slideLength + (slideWidth * 2) +'px';
+            var videoContainerWidth = slideWidth * slideLength +'px';
+            carousel.videoContainer.css({width: videoContainerWidth});
         },
         slideWidthMove : function () {
             return carousel.slide.outerWidth();
@@ -51,14 +53,14 @@ $('document').ready(function () {
         wresize : function(){
             $(window).resize(function () {
                 var wwindow = window.innerWidth;
-                $(carousel.sliderContainer).css('left', '');
+                $(carousel.videoContainer).css('left', '');
                 $('.pager li').removeClass('active');
                 $('.pager li:first-child').addClass('active');
                 carousel.slide.removeClass('current');
                 carousel.slide.eq(0).addClass('current');
                 setTimeout(function () {
                     if(wwindow > 767){
-                        carousel.sliderContainer.css({width: ''});
+                        carousel.videoContainer.css({width: ''});
                         carousel.slide.css({width: ''});
                     } else if (wwindow < 768){
                         carousel.slideMath();
@@ -67,30 +69,30 @@ $('document').ready(function () {
             });
         },
         animateLeft : function(){
-            carousel.sliderContainer.animate({
+            carousel.videoContainer.animate({
                 left: "-="+carousel.slideWidthCarousel()
             }, 200);
         },
         animateRight : function(){
-            carousel.sliderContainer.animate({
+            carousel.videoContainer.animate({
                 left: "+="+carousel.slideWidthCarousel()
             }, 200);
         },
         slideLeft : function () {
-            var currentIndex = carousel.sliderContainer.find('.current').index();
+            var currentIndex = carousel.videoContainer.find('.current').index();
             // get the position of the of carousel wrapper and if it's larger than the width send it back to the start
-            var sliderPosition = carousel.sliderContainer.position().left;
-            var sliderWidth = carousel.sliderContainer.outerWidth();
+            var sliderPosition = carousel.videoContainer.position().left;
+            var sliderWidth = carousel.videoContainer.outerWidth();
             var slideWidth = carousel.slide.outerWidth();
             var positionStop = -(sliderWidth - carousel.slideWidthCarousel() - slideWidth);
             if(sliderPosition >= positionStop){
                 $('.pager li').eq(currentIndex + 1).addClass('active');
-                carousel.sliderContainer.find('.current').next().addClass('current');
+                carousel.videoContainer.find('.current').next().addClass('current');
                 carousel.slide.eq(currentIndex).removeClass('current');
                 carousel.animateLeft();
             } else {
                 $('.pager li').eq(0).addClass('active');
-                carousel.sliderContainer.animate({
+                carousel.videoContainer.animate({
                     left:  0
                 }, 300);
                 carousel.slide.eq(0).addClass('current');
@@ -99,17 +101,17 @@ $('document').ready(function () {
         },
         slideRight : function () {
             var slideCount = carousel.slide.length;
-            var currentIndex = carousel.sliderContainer.find('.current').index();
+            var currentIndex = carousel.videoContainer.find('.current').index();
             $('.pager li').removeClass('active');
             $('.pager li').eq(currentIndex - 1).addClass('active');
 
-            var sliderPosition = carousel.sliderContainer.position().left;
+            var sliderPosition = carousel.videoContainer.position().left;
 
 
             if(sliderPosition < 0){
                 carousel.animateRight();
             } else {
-                carousel.sliderContainer.animate({
+                carousel.videoContainer.animate({
                     left:  - carousel.slideWidthMove() * slideCount + carousel.slideWidthMove()
                 }, 300);
             }
@@ -126,7 +128,7 @@ $('document').ready(function () {
         },
         pager : function () {
             var pager = $('.pager');
-            carousel.sliderContainer.after('<ul class="pager"></ul>');
+            carousel.videoContainer.after('<ul class="pager"></ul>');
             carousel.slide.each(function () {
                 $('.pager').append('<li></li>');
             });
@@ -138,7 +140,7 @@ $('document').ready(function () {
                 } else {
                     carousel.slide.removeClass('current');
                     carousel.slide.eq(pagerIndex).addClass('current');
-                    carousel.sliderContainer.animate({
+                    carousel.videoContainer.animate({
                         left: -carousel.slideWidthMove() * pagerIndex
                     }, 200);
                     $('.pager li').removeClass('active');
@@ -151,12 +153,12 @@ $('document').ready(function () {
                 sigtouchstartx,
                 sigtouchmovex,
                 sigmovex;
-            carousel.sliderContainer.on('touchstart', carousel.slide.find('current') , function(event){
+            carousel.videoContainer.on('touchstart', carousel.slide.find('current') , function(event){
                 sigtouchstartx =  event.originalEvent.touches[0].pageX;
             }).on('touchmove', carousel.slide, function(event){
                 sigtouchmovex = event.originalEvent.touches[0].pageX;
                 sigmovex = (sigtouchmovex - sigtouchstartx);
-                // carousel.sliderContainer.css('left',sigmovex);
+                // carousel.videoContainer.css('left',sigmovex);
             }).on('touchend', carousel.slide.find('current'), function(event){
                 if(sigtouchmovex<sigtouchstartx && sigtouchmovex!=undefined && csAnimating==0 && sigmovex< -125){
                     carousel.slideLeft();
