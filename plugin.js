@@ -47,6 +47,7 @@
                     // set the container width
                     sliderContainer.css({width: sliderContainerWidth});
                 },
+                // set the width of the slider containers
                 slideMathCarousel : function () {
                     var slideLength = slide.length;
                     var slideWidth = slide.outerWidth();
@@ -55,6 +56,7 @@
                     var sliderContainerWidth = slideWidth * slideLength +'px';
                     sliderContainer.css({width: sliderContainerWidth});
                 },
+                // return the distance the slide should travel based off of the slider viewport
                 slideWidthCarousel : function () {
                     var slideWidth = slide.outerWidth();
                     var sliderOuterWrapperWidth = carousel.sliderOuterWrapper.outerWidth();
@@ -110,7 +112,7 @@
                         sliderContainer.parent().find('.pager li').eq(0).addClass('active');
                         sliderContainer.animate({
                             left:  0
-                        }, 300);
+                        }, settings.speed);
                         slide.eq(0).addClass('current');
                         slide.eq(currentIndex).removeClass('current');
                     }
@@ -126,9 +128,25 @@
                         slide.eq(currentIndex).removeClass('current');
                         carousel.animateRight();
                     } else {
-                        sliderContainer.animate({
-                            left:  - carousel.slideWidthCarousel() * slideCount + carousel.slideWidthCarousel()
-                        }, 300);
+                        //do some math to land on the last page of slides for multimode
+                        var slideContainerWidth = sliderContainer.outerWidth();
+                        var viewPortCount = Math.floor(slideContainerWidth / carousel.slideWidthCarousel());
+                        if(settings.mode === 'multi'){
+                            if (viewPortCount <= 3) {
+                                sliderContainer.animate({
+                                    left: -(carousel.slideWidthCarousel() * viewPortCount)
+                                }, settings.speed);
+                            } else {
+                                sliderContainer.animate({
+                                    left: -(carousel.slideWidthCarousel() * viewPortCount - slide.outerWidth())
+                                }, settings.speed);
+                            }
+                        } else {
+                            sliderContainer.animate({
+                                left:  -(carousel.slideWidthCarousel() * slideCount - slide.outerWidth())
+                            }, settings.speed);
+                        }
+
                     }
                     slide.eq(slideCount -1).addClass('current');
                     slide.eq(currentIndex).removeClass('current');
@@ -202,7 +220,7 @@
         speed: 200,
         pager: true,
         mode: 'single',
-        directionNav: false
+        directionNav: true
     });
 }(jQuery));
 
