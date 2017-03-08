@@ -16,7 +16,7 @@
 .video-slider li{
     display: inline-block;
     float: left;
-    width: 150px;
+    width: 100px;
 }
 .video-slider li img{
     width: 100%;
