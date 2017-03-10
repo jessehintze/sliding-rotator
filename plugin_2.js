@@ -19,9 +19,12 @@
             var slide =  sliderContainer.children();
             var windowLoad = window.innerWidth;
             sliderContainer.wrap('<div class="slide-viewport"></div>');
-            // figure out how many visible slides there are
+
+            // global width varibles
             var slideWidth = slide.outerWidth();
             var sliderOuterWrapperWidth = $('.slide-viewport').outerWidth();
+
+            // figure out how many visible slides there are
             var visibleSlides = Math.floor(sliderOuterWrapperWidth / slideWidth);
 
             // how many slides in each carousel
@@ -33,6 +36,8 @@
                     if (settings.directionNav){
                         carousel.directionalNav();
                     }
+                    carousel.cloneSlides();
+
                     carousel.touchEvent();
                     if(settings.mode === 'single'){
                         if(windowLoad < 768){
@@ -51,27 +56,24 @@
                     sliderContainer.css({left: -sliderOuterWrapperWidth})
                 },
                 slideMath : function () {
-                    carousel.cloneSlides();
                     var slideLength = sliderContainer.find('li').length;
                     var sliderContainerWidth = 100 * slideLength+'%';
                     // equally divide each slide so that they scale down responsively
-                    var slideWidth = 100 / slideLength+'%';
+                    var singleSlideWidth = 100 / slideLength+'%';
                     // set the slide width
-                    sliderContainer.find('li').width(slideWidth);
+                    sliderContainer.find('li').width(singleSlideWidth);
                     // set the container width
                     sliderContainer.css({width: sliderContainerWidth});
                 },
                 // set the width of the slider containers
                 slideMathCarousel : function () {
-                    carousel.cloneSlides();
                     var slideLength = sliderContainer.find('li').length;
-                    var slideWidth = slide.outerWidth();
-                    // factor this in to add a clone before and after
-                    // var sliderContainerWidth = slideWidth * slideLength + (slideWidth * 2) +'px';
-                    var sliderContainerWidth = slideWidth * slideLength +'px';
+                    var singleSlideWidth = slide.outerWidth();
+                    var sliderContainerWidth = singleSlideWidth * slideLength +'px';
                     sliderContainer.css({width: sliderContainerWidth});
                 },
                 cloneSlides : function(){
+                    // select the slides that are in the viewport and put them at the start and end
                     var slice = visibleSlides,
                         sliceAppend  = slide.slice(0, slice).clone().addClass('clone'),
                         slicePrepend = slide.slice(-slice).clone().addClass('clone');
@@ -79,7 +81,9 @@
                 },
                 // return the distance the slide should travel based off of the slider viewport
                 slideWidthCarousel : function () {
-                    var visibleSlidesMovement = visibleSlides * slideWidth;
+                    var thisSlideWidth = slide.outerWidth();
+                    var thisVisibleSlides = Math.floor(sliderOuterWrapperWidth / thisSlideWidth);
+                    var visibleSlidesMovement = thisVisibleSlides * thisSlideWidth;
                     return visibleSlidesMovement;
                 },
                 wresize : function(){
@@ -117,7 +121,6 @@
                     // get the position of the of carousel wrapper and if it's larger than the width send it back to the start
                     var sliderPosition = sliderContainer.position().left;
                     var sliderWidth = sliderContainer.outerWidth();
-                    var slideWidth = slide.outerWidth();
 
                     // if position is > container send it to the right
 
@@ -137,6 +140,9 @@
                         slide.eq(0).addClass('current');
                         slide.eq(currentIndex).removeClass('current');
                     }
+                    console.log('click');
+                    console.log(carousel.slideWidthCarousel());
+
                 },
                 slideRight : function () {
                     var slideCount = slide.length;
@@ -177,6 +183,8 @@
                     }
                     slide.eq(slideCount -1).addClass('current');
                     slide.eq(currentIndex).removeClass('current');
+                    console.log('click');
+                    console.log(carousel.slideWidthCarousel());
                 },
                 directionalNav : function () {
                     sliderContainer.parent().append('<div class="direction-nav"><span class="previous">Previous</span><span class="next">Next</span></div>');
@@ -215,6 +223,10 @@
                                     left: -(carousel.slideWidthCarousel() * pagerIndex) - carousel.slideWidthCarousel()
                                 }, 200);
                             } else {
+                                // sliderContainer.animate({
+                                //     left: -carousel.slideWidthCarousel() * (pagerIndex + 1)
+                                // }, 200);
+
                                 sliderContainer.animate({
                                     left: -carousel.slideWidthCarousel() * (pagerIndex + 1)
                                 }, 200);
