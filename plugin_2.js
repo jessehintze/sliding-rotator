@@ -4,7 +4,6 @@
 //    when you resize make it so you don't have to start over // redraw slider
 //    on touch have it move with finger
 // get a slide count, work off pager
-
 (function($){
     $.fn.mwCarousel = function(options){
         var defaults = {
@@ -52,7 +51,6 @@
                     carousel.slideSetup();
                 },
                 slideSetup : function () {
-                    slide.eq(0).addClass('current');
                     sliderContainer.css({left: -sliderOuterWrapperWidth})
                 },
                 slideMath : function () {
@@ -90,11 +88,11 @@
                     $(window).resize(function () {
                         var wwindow = window.innerWidth;
                         if(settings.mode === 'single') {
-                            $(sliderContainer).css('left', '');
+                            // need to fix position so it doesn't move on resize
+                            // $(sliderContainer).css('left', -sliderOuterWrapperWidth);
                             $('.pager li').removeClass('active');
                             $('.pager li:first-child').addClass('active');
-                            slide.removeClass('current');
-                            slide.eq(0).addClass('current');
+
                             setTimeout(function () {
                                 if (wwindow > 767) {
                                     sliderContainer.css({width: ''});
@@ -106,85 +104,50 @@
                         }
                     });
                 },
-                animateLeft : function(){
+                animateLeft : function(after){
                     sliderContainer.animate({
                         left: "-="+carousel.slideWidthCarousel()
-                    }, settings.speed);
+                    }, settings.speed, function () {
+                        sliderContainer.css('left', after)
+                    });
                 },
-                animateRight : function(){
+                animateRight : function(after){
                     sliderContainer.animate({
                         left: "+="+carousel.slideWidthCarousel()
-                    }, settings.speed);
+                    }, settings.speed, function () {
+                        sliderContainer.css('left', after)
+                    });
                 },
                 slideLeft : function () {
-                    var currentIndex = sliderContainer.find('.current').index();
-                    // get the position of the of carousel wrapper and if it's larger than the width send it back to the start
-                    var sliderPosition = sliderContainer.position().left;
-                    var sliderWidth = sliderContainer.outerWidth();
+                    var thisPager = sliderContainer.parent().find('.pager li');
+                    var currentIndex = sliderContainer.parent().find('.active').index();
+                    var lastIndex = sliderContainer.parent().find('.pager li').last().index();
 
-                    // if position is > container send it to the right
-
-                    var positionStop = -(sliderWidth - carousel.slideWidthCarousel() - slideWidth);
-                    if(sliderPosition >= positionStop){
-                        sliderContainer.parent().find('.pager li').removeClass('active');
-                        sliderContainer.parent().find('.pager li').eq(currentIndex + 1).addClass('active');
-                        sliderContainer.find('.current').next().addClass('current');
-                        slide.eq(currentIndex).removeClass('current');
-                        carousel.animateLeft();
+                    if(currentIndex === lastIndex){
+                        carousel.animateLeft(-sliderOuterWrapperWidth);
+                        thisPager.removeClass('active');
+                        thisPager.eq(0).addClass('active');
                     } else {
-                        sliderContainer.parent().find('.pager li').removeClass('active');
-                        sliderContainer.parent().find('.pager li').eq(0).addClass('active');
-                        sliderContainer.animate({
-                            left:  0
-                        }, settings.speed);
-                        slide.eq(0).addClass('current');
-                        slide.eq(currentIndex).removeClass('current');
+                        carousel.animateLeft();
+                        thisPager.removeClass('active');
+                        thisPager.eq(currentIndex + 1).addClass('active');
                     }
-                    console.log('click');
-                    console.log(carousel.slideWidthCarousel());
-
                 },
                 slideRight : function () {
-                    var slideCount = slide.length;
-                    var currentIndex = sliderContainer.find('.current').index();
-                    var sliderPosition = sliderContainer.position().left;
-                    sliderContainer.parent().find('.pager li').removeClass('active');
-                    sliderContainer.parent().find('.pager li').eq(currentIndex - 1).addClass('active');
-                    if(sliderPosition < 0){
-                        sliderContainer.find('.current').prev().addClass('current');
-                        slide.eq(currentIndex).removeClass('current');
-                        carousel.animateRight();
+                    var thisPager = sliderContainer.parent().find('.pager li');
+                    var currentIndex = sliderContainer.parent().find('.active').index();
+                    var lastIndex = sliderContainer.parent().find('.pager li').last().index();
+
+                    if(currentIndex + lastIndex  === lastIndex){
+                        carousel.animateRight(-(sliderOuterWrapperWidth * slideViewCount));
+                        thisPager.removeClass('active');
+                        thisPager.eq(lastIndex).addClass('active');
+
                     } else {
-                        // do some math to land on the last page of slides for multimode
-
-                        // check to see what group of slides you are on.
-                        // set a reference for what group of slides you are on
-                        // probably through a pager is the best way
-                        // if on the last slide navigate to the end then reset the position to the beginning
-
-                        var slideContainerWidth = sliderContainer.outerWidth();
-                        var viewPortCount = Math.floor(slideContainerWidth / carousel.slideWidthCarousel());
-                        if(settings.mode === 'multi'){
-                            if (viewPortCount <= 3) {
-                                sliderContainer.animate({
-                                    left: -(carousel.slideWidthCarousel() * viewPortCount)
-                                }, settings.speed);
-                            } else {
-                                sliderContainer.animate({
-                                    left: -(carousel.slideWidthCarousel() * viewPortCount - slide.outerWidth())
-                                }, settings.speed);
-                            }
-                        } else {
-                            sliderContainer.animate({
-                                left:  -(carousel.slideWidthCarousel() * slideCount - slide.outerWidth())
-                            }, settings.speed);
-                        }
-
+                        carousel.animateRight();
+                        thisPager.removeClass('active');
+                        thisPager.eq(currentIndex - 1).addClass('active');
                     }
-                    slide.eq(slideCount -1).addClass('current');
-                    slide.eq(currentIndex).removeClass('current');
-                    console.log('click');
-                    console.log(carousel.slideWidthCarousel());
                 },
                 directionalNav : function () {
                     sliderContainer.parent().append('<div class="direction-nav"><span class="previous">Previous</span><span class="next">Next</span></div>');
@@ -216,17 +179,11 @@
                         if($(this).hasClass('active')){
                             return;
                         } else {
-                            slide.removeClass('current');
-                            slide.eq(pagerIndex).addClass('current');
                             if(settings.mode === 'multi') {
                                 sliderContainer.animate({
                                     left: -(carousel.slideWidthCarousel() * pagerIndex) - carousel.slideWidthCarousel()
                                 }, 200);
                             } else {
-                                // sliderContainer.animate({
-                                //     left: -carousel.slideWidthCarousel() * (pagerIndex + 1)
-                                // }, 200);
-
                                 sliderContainer.animate({
                                     left: -carousel.slideWidthCarousel() * (pagerIndex + 1)
                                 }, 200);
