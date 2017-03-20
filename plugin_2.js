@@ -4,6 +4,7 @@
 //    when you resize make it so you don't have to start over // redraw slider
 //    on touch have it move with finger
 // get a slide count, work off pager
+// add a destroy function
 (function($){
     $.fn.mwCarousel = function(options){
         var defaults = {
@@ -36,12 +37,13 @@
                         carousel.directionalNav();
                     }
                     carousel.cloneSlides();
-
                     carousel.touchEvent();
                     if(settings.mode === 'single'){
-                        if(windowLoad < 768){
-                            carousel.slideMath();
-                        }
+                        // if(windowLoad < 768){
+                        //     carousel.slideMath();
+                        // }
+                        carousel.slideMath();
+
                     } else if (settings.mode === 'multi'){
                         carousel.slideMathCarousel();
                     }
@@ -51,8 +53,10 @@
                     carousel.slideSetup();
                 },
                 slideSetup : function () {
+                    // move the slider left to account for the cloned slides
                     sliderContainer.css({left: -sliderOuterWrapperWidth})
                 },
+                // set the width of the individual image slider containers
                 slideMath : function () {
                     var slideLength = sliderContainer.find('li').length;
                     var sliderContainerWidth = 100 * slideLength+'%';
@@ -63,7 +67,7 @@
                     // set the container width
                     sliderContainer.css({width: sliderContainerWidth});
                 },
-                // set the width of the slider containers
+                // set the width of the multiple slider containers
                 slideMathCarousel : function () {
                     var slideLength = sliderContainer.find('li').length;
                     var singleSlideWidth = slide.outerWidth();
@@ -90,19 +94,33 @@
                         if(settings.mode === 'single') {
                             // need to fix position so it doesn't move on resize
                             // $(sliderContainer).css('left', -sliderOuterWrapperWidth);
-                            $('.pager li').removeClass('active');
-                            $('.pager li:first-child').addClass('active');
+                            // $('.pager li').removeClass('active');
+                            // $('.pager li:first-child').addClass('active');
 
                             setTimeout(function () {
-                                if (wwindow > 767) {
-                                    sliderContainer.css({width: ''});
-                                    slide.css({width: ''});
-                                } else if (wwindow < 768) {
-                                    carousel.slideMath();
-                                }
+                                // if (wwindow > 767) {
+                                //     sliderContainer.css({width: ''});
+                                //     slide.css({width: ''});
+                                // } else if (wwindow < 768) {
+                                //     carousel.slideMath();
+                                // }
+                                carousel.slideMath();
+
                             }, 500);
+                            carousel.repositionSlider();
+
                         }
                     });
+                },
+                repositionSlider : function () {
+                    // get what count visible slide is on
+
+                    var checkViewportWidth = $('.slide-viewport').outerWidth();
+                    var slideIndex = sliderContainer.parent().find('.pager li.active').index();
+                    var positionMath = -(slideIndex + 1) * checkViewportWidth;
+
+                    sliderContainer.css('left', positionMath)
+
                 },
                 animateLeft : function(after){
                     sliderContainer.animate({
