@@ -1,9 +1,6 @@
 // wishlist
-//    slide to the end instead so there is no space at the end
-//    rotate all the way through
-//    when you resize make it so you don't have to start over // redraw slider
+//    have multislide move distance of number of slides not full viewport
 //    on touch have it move with finger
-// get a slide count, work off pager
 // add a destroy function
 (function($){
     $.fn.mwCarousel = function(options){
@@ -15,6 +12,7 @@
         };
         var settings = $.extend({}, defaults, options);
         return this.each(function() {
+            var isAnimating = 0;
             var sliderContainer = $(this);
             var slide =  sliderContainer.children();
             var windowLoad = window.innerWidth;
@@ -22,7 +20,7 @@
 
             // global width varibles
             var slideWidth = slide.outerWidth();
-            var sliderOuterWrapperWidth = $('.slide-viewport').outerWidth();
+            var sliderOuterWrapperWidth = sliderContainer.parent().outerWidth();
 
             // figure out how many visible slides there are
             var visibleSlides = Math.floor(sliderOuterWrapperWidth / slideWidth);
@@ -54,7 +52,7 @@
                 },
                 slideSetup : function () {
                     // move the slider left to account for the cloned slides
-                    sliderContainer.css({left: -sliderOuterWrapperWidth})
+                    sliderContainer.css({left: -sliderOuterWrapperWidth});
                 },
                 // set the width of the individual image slider containers
                 slideMath : function () {
@@ -114,26 +112,28 @@
                 },
                 repositionSlider : function () {
                     // get what count visible slide is on
-
                     var checkViewportWidth = $('.slide-viewport').outerWidth();
                     var slideIndex = sliderContainer.parent().find('.pager li.active').index();
                     var positionMath = -(slideIndex + 1) * checkViewportWidth;
-
+                    // on resize keep the current slide to the left of viewport
                     sliderContainer.css('left', positionMath)
-
                 },
                 animateLeft : function(after){
+                    isAnimating = 1;
                     sliderContainer.animate({
                         left: "-="+carousel.slideWidthCarousel()
                     }, settings.speed, function () {
-                        sliderContainer.css('left', after)
+                        sliderContainer.css('left', after);
+                        isAnimating = 0;
                     });
                 },
                 animateRight : function(after){
+                    isAnimating = 1;
                     sliderContainer.animate({
                         left: "+="+carousel.slideWidthCarousel()
                     }, settings.speed, function () {
-                        sliderContainer.css('left', after)
+                        sliderContainer.css('left', after);
+                        isAnimating = 0;
                     });
                 },
                 slideLeft : function () {
@@ -172,10 +172,14 @@
                     var nextArrow = $('.next');
                     var previousArrow = $('.previous');
                     sliderContainer.parent().find(nextArrow).on('click', function () {
-                        carousel.slideLeft();
+                        if(!isAnimating) {
+                            carousel.slideLeft();
+                        }
                     });
                     sliderContainer.parent().find(previousArrow).on('click', function () {
-                        carousel.slideRight();
+                        if(!isAnimating) {
+                            carousel.slideRight();
+                        }
                     });
                 },
                 pager : function () {

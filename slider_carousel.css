@@ -1,9 +1,14 @@
+body{
+    margin: 0;
+    padding: 0;
+}
 .slide-viewport{
     /*width: 600px;*/
     overflow: hidden;
     max-width: 600px;
     margin: 0 auto;
     position: relative;
+    width: 100%;
 
 }
 .video-slider{
@@ -32,6 +37,7 @@
     display: inline-block;
     float: left;
     width: 100%;
+    position: relative;
 }
 .img-slider li img{
     width: 100%;
@@ -53,4 +59,7 @@
 }
 .pager li.active{
     background: #999;
+}
+.slider-wrap{
+    padding: 0 50px;
 }
