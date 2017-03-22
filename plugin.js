@@ -60,6 +60,8 @@
                 slideWidthCarousel : function () {
                     var slideWidth = slide.outerWidth();
                     var sliderOuterWrapperWidth = carousel.sliderOuterWrapper.outerWidth();
+                    console.log(sliderOuterWrapperWidth);
+
                     var visibleSlides = Math.floor(sliderOuterWrapperWidth / slideWidth);
                     var visibleSlidesMovement = visibleSlides * slideWidth;
                     return visibleSlidesMovement;

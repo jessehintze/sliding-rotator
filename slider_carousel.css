@@ -1,15 +1,14 @@
-body{
+*{
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 .slide-viewport{
-    /*width: 600px;*/
+    width: 100%;
     overflow: hidden;
     max-width: 600px;
     margin: 0 auto;
     position: relative;
-    width: 100%;
-
 }
 .video-slider{
     display: inline-block;
