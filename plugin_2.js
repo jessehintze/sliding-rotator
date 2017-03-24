@@ -19,10 +19,12 @@
             sliderContainer.wrap('<div class="slide-viewport"></div>');
             // global width varibles
             var slideWidth = slide.outerWidth();
-            var sliderOuterWrapperWidthGlobal = sliderContainer.parent().outerWidth();
+            var sliderOuterWrapperWidth = sliderContainer.parent().outerWidth();
 
             // figure out how many visible slides there are
-            var visibleSlides = Math.floor(sliderOuterWrapperWidthGlobal / slideWidth);
+            var visibleSlides = Math.floor(sliderOuterWrapperWidth / slideWidth);
+
+            console.log(sliderOuterWrapperWidth);
 
             // how many slides in each carousel
             var slideCount = slide.length;
@@ -51,8 +53,6 @@
                 },
                 slideSetup : function () {
                     // move the slider left to account for the cloned slides
-                    var sliderOuterWrapperWidth = sliderContainer.parent().outerWidth();
-
                     sliderContainer.css({left: -sliderOuterWrapperWidth});
                 },
                 // set the width of the individual image slider containers
@@ -82,8 +82,6 @@
                 },
                 // return the distance the slide should travel based off of the slider viewport
                 slideWidthCarousel : function () {
-                    var sliderOuterWrapperWidth = sliderContainer.parent().outerWidth();
-
                     var thisSlideWidth = slide.outerWidth();
                     var thisVisibleSlides = Math.floor(sliderOuterWrapperWidth / thisSlideWidth);
                     var visibleSlidesMovement = thisVisibleSlides * thisSlideWidth;
@@ -140,7 +138,6 @@
                     });
                 },
                 slideLeft : function () {
-                    var sliderOuterWrapperWidth = sliderContainer.parent().outerWidth();
                     var thisPager = sliderContainer.parent().find('.pager li');
                     var currentIndex = sliderContainer.parent().find('.active').index();
                     var lastIndex = sliderContainer.parent().find('.pager li').last().index();
@@ -156,7 +153,6 @@
                     }
                 },
                 slideRight : function () {
-                    var sliderOuterWrapperWidth = sliderContainer.parent().outerWidth();
                     var thisPager = sliderContainer.parent().find('.pager li');
                     var currentIndex = sliderContainer.parent().find('.active').index();
                     var lastIndex = sliderContainer.parent().find('.pager li').last().index();

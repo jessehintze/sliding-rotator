@@ -6,7 +6,7 @@
 .slide-viewport{
     width: 100%;
     overflow: hidden;
-    max-width: 600px;
+    max-width: 100%;
     margin: 0 auto;
     position: relative;
 }
